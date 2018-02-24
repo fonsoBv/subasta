@@ -129,7 +129,8 @@ INSERT INTO `tbraza` (`razaid`, `razanombre`) VALUES
 (34, 'Ayshire\r\n'),
 (35, 'Holstein\r\n'),
 (36, 'Guernsey\r\n'),
-(37, 'Chumeca\r\n');
+(37, 'Chumeca\r\n'),
+(0, 'Otro\r\n');
 
 -- --------------------------------------------------------
 
