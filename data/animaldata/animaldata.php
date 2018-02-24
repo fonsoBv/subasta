@@ -23,18 +23,38 @@ class AnimalData extends Data {
         $conn = mysqli_connect($this->server, $this->user, $this->password, $this->db);
         $conn->set_charset('utf8');
 
-          $queryInsert = "INSERT INTO tbanimal VALUES (" . $animal->getAnimalNumero() . ", " .
-               "'".$animal->getAnimalDonador()."'". "," .
-                "'".$animal->getAnimalLugarProcedencia() ."'". ", "
-                .$animal->getAnimalTipo(). ", "
-                .$animal->getAnimalRaza().", " .
-                "'".$animal->getAnimalDescripcion() ."'". ", " .
-               "'subasta'". ");";
+        //validar que el numero del animal no exista previamente
+        $queryValidate = "SELECT COUNT(*) FROM tbanimal WHERE animalnumero='".$animal->getAnimalNumero()."';";
+        $result2 = mysqli_query($conn,$queryValidate);
+        $number;
 
-        $result = mysqli_query($conn, $queryInsert);
-        mysqli_close($conn);
+        while($row=mysqli_fetch_row($result2)){
+            $number = $row[0];
+        }//end while
 
-        return $result;
+        if($number == 1){
+            mysqli_close($conn);
+            return("error");
+        }else{
+            $queryInsert = "INSERT INTO tbanimal VALUES (" . $animal->getAnimalNumero() . ", " .
+            "'".$animal->getAnimalDonador()."'". "," .
+            "'".$animal->getAnimalLugarProcedencia() ."'". ", "
+            .$animal->getAnimalTipo(). ", "
+            .$animal->getAnimalRaza().", " .
+            "'".$animal->getAnimalDescripcion() ."'". ", " .
+            "'subasta'". ");";
+
+            $result = mysqli_query($conn, $queryInsert);
+            mysqli_close($conn);
+
+            if($result){
+                return ($result);
+            }else{
+                return ("error");
+            }//if-else
+        }//if-else
+
+        //return $result;
 
     }//insertar animal
 

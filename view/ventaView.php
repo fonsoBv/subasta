@@ -76,13 +76,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                 <form>
                                     <label for="">Comprador</label>
                                     <!-- <select id="nombreComprador"></select> -->
-                                    <input type="text" id="nombreComprador" name="nombreComprador">
+                                    <input type="text" id="nombreComprador"  name="nombreComprador">
 
                                     <label for="Precio">Precio</label>
 
                                     <input id="price" autocomplete="off" name="price" type="text" class="form-control
                                     required" data-mask="₡"placeholder="₡">
-
+                                    <label for="">Ventas</label>
+                                    <select id="slventas" name="slventas" change> </select>
+                                    <label for="">Resubastas</label>
+                                    <select id="slresubasta" name="slresubastas" change> </select>
                                     <div id="priceMessage"></div>
                                     <br>
                                     <input type="button" value="Venta" onclick="registrarAnimal()">
@@ -170,16 +173,59 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     });
 
     $(document).ready(function() {
+
         cargarCompradores();
         cargarAnimales();
-
-        $.post("../business/subastabusiness/subastaAction.php",{'obtenerMontoSubastas': 'obtenerMontoSubastas'}, function(data){
-            $("#registro").html(data);
-        });
+        cargarVentasResubastas();
 
     });
 
-    function cargarCompradores(){ 
+    function cargarVentasResubastas(){
+
+      $.post("../business/subastabusiness/subastaAction.php",{'ObtenerResubastasyVentas': 'ObtenerResubastasyVentas'}, function(data){
+                  var allVentas = JSON.parse(data);
+                  asignacion1 = "";
+                  asignacion2 = "";
+                  for (var i = 0; i < allVentas.Ventas.length; i++) {
+                    asignacion1 +="<option value='" + allVentas.Ventas[i].ventaid + "'>"+
+                    allVentas.Ventas[i].ventaid +"</option>";
+                  }//end for
+
+                  $('#slventas').html(asignacion1);
+
+                  for (var i = 0; i < allVentas.Resubastas.length; i++) {
+                      asignacion2 +="<option value='" + allVentas.Resubastas[i].resubastaid + "'>"+
+                      allVentas.Resubastas[i].resubastaid +"</option>";
+                  }//end for
+
+                  $('#slresubasta').html(asignacion2);
+
+
+              });
+    }
+
+    $('#slventas').change(function(){
+        var ventaid = $(this).val();
+        $.post("../business/subastabusiness/subastaAction.php",{'obtenerUnaVenta': ventaid}, function(data){
+          var venta = JSON.parse(data);
+          alert(data);
+          $('#numeroAnimal2').val(venta.Venta[0].ventaanimal);
+          $('#').val();
+          $('#').val();
+        });
+    });
+
+      $('#slresubastas').change(function(){
+        var resubastaid = $(this).val();
+          $.post("../business/subastabusiness/subastaAction.php",{'obtenerUnaResubasta': resubastaid}, function(data){
+            var resubastaid = JSON.parse(data);
+            $('#numeroAnimal2').val(venta.Venta[0].ventaanimal);
+            $('#').val();
+            $('#').val();
+          });
+        });
+
+    function cargarCompradores(){
         $.post("../business/compradorbusiness/compradorAction.php",{'obtenerCompradores': 'obtenerCompradores'}, function(data){
             var compradores = JSON.parse(data);
             var items = [];
@@ -192,7 +238,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         });
     }
 
-    function cargarAnimales(){ 
+    function cargarAnimales(){
         $.post("../business/animalbusiness/animalAction.php",{'obtenerNumerosAnimales': 'obtenerNumerosAnimales'}, function(data){
             var animales = JSON.parse(data);
             var items = [];
@@ -259,6 +305,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             })
             .done(function(resp){
                 /*Convierte el objeto codificado en un objeto json*/
+                
                 var datos = JSON.parse(resp);
                 var asignacion = "";
 
@@ -317,7 +364,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         precio = document.getElementById("price").value;
         comprador = document.getElementById("nombreComprador").value.split(" - ")[0];
         numeroAnimal = document.getElementById("numeroAnimal2").value;
-        
+
         /*Se arma un objeto JSON*/
         var datos;
 
@@ -349,7 +396,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 //$("#numeroAnimal option[value='"+numeroAnimal+"']").remove();
 
                 registro = (parseInt($("#registro").text()) + parseInt($("#price").val()));
-                $("#registro").html(registro); 
+                $("#registro").html(registro);
 
                 $('#numeroAnimal2').val("");
                 $('#price').val("");
@@ -392,7 +439,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         precio = document.getElementById("price").value;
         comprador = document.getElementById("nombreComprador").value.split(" - ")[0];
         numeroAnimal = document.getElementById("numeroAnimal2").value;
-        
+
         /*Se arma un objeto JSON*/
         var datos;
 
@@ -446,7 +493,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 $('#nombreComprador').val("");
 
                 //alert(registro);
-                $("#registro").html(registro); 
+                $("#registro").html(registro);
             }
 
             //$('#submitMessage').html(respuesta);

@@ -8,19 +8,22 @@ que se toma la ruta desde el view
 */
 if (isset($_POST['eliminar']) || isset($_POST['actualizar']) || isset($_POST['insertar'])
 || isset($_POST['obtener']) || isset($_POST['registrarVenta']) || isset($_POST['insertarResubasta']) || isset($_POST['obtenerMontoSubastas'])
-|| isset($_POST['FacturaComprador'])) {
+|| isset($_POST['FacturaComprador']) || isset($_POST['ObtenerResubastasyVentas']) || isset($_POST['obtenerUnaVenta'])) {
 
-	include_once '../../data/data.php';
-	include '../../domain/subasta/subasta.php';
+    include_once '../../data/data.php';
+    include '../../domain/subasta/subasta.php';
+
 }else {
-	include_once '../data/data.php';
-	include '../domain/subasta/subasta.php';
+
+    include_once '../data/data.php';
+    include '../domain/subasta/subasta.php';
+
 }
 
 
 class SubastaData extends Data {
 
-	public function insertarVenta($ventaAnimal, $ventaComprador, $subastaPrecio) {
+    public function insertarVenta($ventaAnimal, $ventaComprador, $subastaPrecio) {
 
         $conn = mysqli_connect($this->server, $this->user, $this->password, $this->db);
         $conn->set_charset('utf8');
@@ -45,10 +48,11 @@ class SubastaData extends Data {
 
         mysqli_close($conn);
 
+        insertarControl($ventaanimal, $ventacomprador, $ventaprecio);
     }//insertarVenta
 
     public function insertarResubasta($resubastaAnimal, $resubastaComprador,
-	$resubastaPrecio) {
+    $resubastaPrecio) {
 
         $conn = mysqli_connect($this->server, $this->user, $this->password, $this->db);
         $conn->set_charset('utf8');
@@ -63,7 +67,7 @@ class SubastaData extends Data {
         }//end if
 
         $queryInsert = "INSERT INTO tbresubasta VALUES (" . $nextId . "," .$resubastaAnimal. ",
-		" .$resubastaComprador. "," .$resubastaPrecio. "," ."'A'" . ");";
+        " .$resubastaComprador. "," .$resubastaPrecio. "," ."'A'" . ");";
 
         $result = mysqli_query($conn, $queryInsert);
 
@@ -73,7 +77,22 @@ class SubastaData extends Data {
         mysqli_query($conn, $queryActualizarAnimal);
 
         mysqli_close($conn);
+
+        insertarControl($resubastaanimal, $resubastacomprador, $resubastaprecio);
     }//insertarresubasta
+
+    public function insertarControl($Animal, $Comprador, $Precio) {
+
+        $conn = mysqli_connect($this->server, $this->user, $this->password, $this->db);
+        $conn->set_charset('utf8');
+
+        $queryInsert = "INSERT INTO tbsubasta (id_animal, id_comprador, precio) VALUES (" . $Animal . "," . $Comprador . "," . $Precio . ");";
+
+        $result = mysqli_query($conn, $queryInsert);
+
+        mysqli_close($conn);
+
+    }//insertarVenta
 
     public function eliminarVenta($subastaid) {
 
@@ -148,36 +167,78 @@ class SubastaData extends Data {
         return $resubastas;
 
     }//obtenerResubastas
+        public function obtenerResubastasYventas() {
 
+                $conn = mysqli_connect($this->server, $this->user, $this->password, $this->db);
+                $conn->set_charset('utf8');
 
+                $querySelect = "SELECT tbventa.ventaid,tbventa.ventaanimal,tbventa.ventacomprador,tbventa.ventaprecio,tbventa.ventaestado
+                 FROM tbventa;";
+                 $querySelect2 = "SELECT tbresubasta.resubastaid,tbresubasta.resubastaanimal,
+                 tbresubasta.resubastacomprador,tbresubasta.resubastaprecio,tbresubasta.resubastaestado
+                 FROM tbresubasta;";
+                $result1 = mysqli_query($conn, $querySelect);
+                $result2 = mysqli_query($conn, $querySelect2);
+
+                mysqli_close($conn);
+                $allVentas["Ventas"][] = [];
+                $allVentas["Resubastas"][] = [];
+                while ($row = mysqli_fetch_array($result1)) {
+                        $allVentas["Ventas"][] = $row;
+                }//end while
+
+                while ($row = mysqli_fetch_array($result2)) {
+                        $allVentas["Resubastas"][] = $row;
+                }//end while
+
+                echo json_encode($allVentas);
+
+        }//obtenerResubastas
+
+        public function obtenerUnaVenta($idVenta){
+
+            $conn = mysqli_connect($this->server, $this->user, $this->password, $this->db);
+            $conn->set_charset('utf8');
+            $querySelect = "SELECT * FROM tbventa WHERE ventaid=" . $idVenta. ";";
+            $result1 = mysqli_query($conn, $querySelect);
+            while ($row = mysqli_fetch_array($result1)) {
+                    $venta["venta"][] = $row;
+            }//end while
+            echo json_encode($venta);
+        }
+        public function obtenerUnaResubasta($idResubasta){
+
+            $conn = mysqli_connect($this->server, $this->user, $this->password, $this->db);
+            $conn->set_charset('utf8');
+            $querySelect = "SELECT * FROM tbresubasta WHERE resubastaid=" . $idResubasta. ";";
+            $result1 = mysqli_query($conn, $querySelect);
+            while ($row = mysqli_fetch_array($result1)) {
+                    $resubasta["resubasta"][] = $row;
+            }//end while
+            echo json_encode($resubasta);
+        }
     public function obtenerMontoSubastas() {
 
         $conn = mysqli_connect($this->server, $this->user, $this->password, $this->db);
         $conn->set_charset('utf8');
 
-        //Get the last id
-        $queryGetLastId = "SELECT SUM(ventaprecio) AS ventaprecio  FROM tbventa";
-        $idCont = mysqli_query($conn, $queryGetLastId);
+        //monto acumulado de las subastas realizadas
+        $queryMonto = "SELECT SUM(precio) AS precio  FROM tbsubasta";
+        $idCont = mysqli_query($conn, $queryMonto);
 
         if ($row = mysqli_fetch_row($idCont)) {
             $montoVentas = trim($row[0]);
         }//end if
 
-        //Get the last id
-        $queryResubastas = "SELECT SUM(resubastaprecio) AS resubastaprecio  FROM tbresubasta";
-        $idCont2 = mysqli_query($conn, $queryResubastas);
-
-        if ($row = mysqli_fetch_row($idCont2)) {
-            $montoResubastas = trim($row[0]);
-        }//end if
-
-        $montoTotal = $montoVentas + $montoResubastas;
+        $montoTotal = $montoVentas;
 
         mysqli_close($conn);
 
         echo json_encode($montoTotal);
 
     }//insertarVenta
+
+
 
         public function obtenerVentasPorComprador($compradorId){
             $conn = mysqli_connect($this->server, $this->user, $this->password, $this->db);
@@ -209,6 +270,8 @@ class SubastaData extends Data {
 
             echo json_encode($ventas);
     }//Facturas por
+
+
 
 }//end class
 

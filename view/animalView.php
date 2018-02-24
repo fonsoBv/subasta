@@ -119,10 +119,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 <select id="animalRaza" name="animalRaza" size="10">
                                 <?php
                                     foreach ($razas as $raza) {
-                                        if($raza->getRazaId() == 1){
-                                            echo '<option selected="true" value='.$raza->getRazaId().'>'.$raza->getRazaNombre().'</option>';
+                                        if($raza->getRazaId() == 0){
+
                                         }else{
-                                            echo '<option value='.$raza->getRazaId().'>'.$raza->getRazaNombre().'</option>';
+                                            if($raza->getRazaId() == 1){
+                                                echo '<option selected="true" value='.$raza->getRazaId().'>'.$raza->getRazaNombre().'   </option>';
+                                            }else{
+                                                echo '<option value='.$raza->getRazaId().'>'.$raza->getRazaNombre().'</option>';
+                                            }
                                         }
                                     }//foreach
                                 ?>
@@ -172,7 +176,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 mostrarMensaje("error", "Revise los espacios numéricos");
             }else if(mensajeObtenido === "emptyField"){
                 mostrarMensaje("error", "Complete los datos solicitados");
-            }
+            }else if(mensajeObtenido === "numeroRepetido"){
+                mostrarMensaje("error", "El número de Animal ya existe");
+            }//if-else
         }//if-else
     });
 
@@ -226,6 +232,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 $('#lbanimalraza').attr("style", "visibility:hidden");
                 $('#animalRaza').attr("style", "visibility:hidden");
                 $('#animalRaza').attr("size", 0);
+                $('#animalRaza').val(0);
                 $("#animalRaza").selectpicker("refresh");
             });
         }

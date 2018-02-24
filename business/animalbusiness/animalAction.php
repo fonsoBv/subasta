@@ -93,7 +93,11 @@ if (isset($_POST['actualizar'])) {
                 if ($resultado == 1) {
                     header("location: ../../view/animalView.php?success=inserted");
                 } else {
-                    header("location: ../../view/animalView.php?error=dbError");
+                    if($resultado == "error"){
+                        header("location: ../../view/animalView.php?error=numeroRepetido");
+                    }else{
+                        header("location: ../../view/animalView.php?error=dbError");
+                    }//if
                 }//if error a nivel de base
             } else {
                 header("location: ../../view/animalView.php?error=numberFormat");
