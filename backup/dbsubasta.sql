@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.5.1
+-- version 4.5.2
 -- http://www.phpmyadmin.net
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 21-02-2018 a las 00:57:52
--- Versión del servidor: 5.7.11
--- Versión de PHP: 5.6.19
+-- Host: localhost
+-- Generation Time: Feb 24, 2018 at 07:03 p.m.
+-- Server version: 10.1.13-MariaDB
+-- PHP Version: 5.5.37
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,13 +17,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `dbsubasta`
+-- Database: `dbsubasta`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tbanimal`
+-- Table structure for table `tbanimal`
 --
 
 CREATE TABLE `tbanimal` (
@@ -37,16 +37,20 @@ CREATE TABLE `tbanimal` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `tbanimal`
+-- Dumping data for table `tbanimal`
 --
 
 INSERT INTO `tbanimal` (`animalnumero`, `animaldonador`, `animallugarprocedencia`, `animaltipo`, `animalraza`, `animaldescripcion`, `animalestado`) VALUES
-(1, 'Donador Animal 1', 'Turrialba', 4, 2, 'Cafe con negro', 'subasta');
+(1, 'Donador Animal 1', 'Turrialba', 4, 2, 'Cafe con negro', 'subasta'),
+(2, 'Doandor animal 2', 'turrilaba', 3, 2, 'no se ', 'subasta'),
+(4, 'Johan', 'Juan Viñas', 5, 33, 'Blanca', 'subasta'),
+(3, 'donador 3', 'turrialba', 4, 5, 'no se descripcion', 'subasta'),
+(12, 'Alfonso', 'Sauce', 1, 5, 'para toro', 'subasta');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tbcomprador`
+-- Table structure for table `tbcomprador`
 --
 
 CREATE TABLE `tbcomprador` (
@@ -61,18 +65,22 @@ CREATE TABLE `tbcomprador` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `tbcomprador`
+-- Dumping data for table `tbcomprador`
 --
 
 INSERT INTO `tbcomprador` (`compradorcodigo`, `compradornumeroidentificacion`, `compradornombrecompleto`, `compradortelefono`, `compradordireccion`, `compradorrecomendador`, `compradortipopago`, `compradornumeropagare`) VALUES
 (1, '304980175', 'Silvia Calderon Fernandez', '88888888', 'Tayutic, Turrialba', 'Recomendación', 'Credito', 100),
 (2, '303070134', 'Hilda Fernandez Gonzalez', '45645', 'Tayutic, Turrialba', 'Recomendación', 'Contado', 0),
-(3, '305260318', 'Maureen Calderon Fernandez', '787', 'Tayutic, Turrialba', 'Recomendación', 'Contado', 0);
+(3, '305260318', 'Maureen Calderon Fernandez', '787', 'Tayutic, Turrialba', 'Recomendación', 'Contado', 0),
+(4, '303250487', 'Johan Agüero', '6489-7452', 'Juan Viñas', 'NO se', 'Contado', 0),
+(5, '4444415', 'Estiben', '1234-5678', 'Turri', 'Johan', 'Contado', 0),
+(6, '0987654321', 'Silvia Calderon', '1234-5678', 'Turrialba', '', 'Contado', 0),
+(7, '3503808', 'Alfonso Brenes', '8555-2542', 'Sauce', 'Johan', 'Contado', 0);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tbraza`
+-- Table structure for table `tbraza`
 --
 
 CREATE TABLE `tbraza` (
@@ -81,7 +89,7 @@ CREATE TABLE `tbraza` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `tbraza`
+-- Dumping data for table `tbraza`
 --
 
 INSERT INTO `tbraza` (`razaid`, `razanombre`) VALUES
@@ -97,7 +105,7 @@ INSERT INTO `tbraza` (`razaid`, `razanombre`) VALUES
 (10, 'Romagnola\r\n'),
 (11, 'Chianina\r\n'),
 (12, 'Limousine\r\n'),
-(13, 'Blonde d\'aquitaine\r\n'),
+(13, 'Blonde d''aquitaine\r\n'),
 (14, 'Pardo suizo\r\n'),
 (15, 'Inra 95\r\n'),
 (16, 'Cebú con cruce lechero\r\n'),
@@ -126,7 +134,7 @@ INSERT INTO `tbraza` (`razaid`, `razanombre`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tbresubasta`
+-- Table structure for table `tbresubasta`
 --
 
 CREATE TABLE `tbresubasta` (
@@ -140,7 +148,20 @@ CREATE TABLE `tbresubasta` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tbtipoanimal`
+-- Table structure for table `tbsubasta`
+--
+
+CREATE TABLE `tbsubasta` (
+  `id` int(11) NOT NULL,
+  `id_animal` int(11) NOT NULL,
+  `id_comprador` int(11) NOT NULL,
+  `precio` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbtipoanimal`
 --
 
 CREATE TABLE `tbtipoanimal` (
@@ -150,7 +171,7 @@ CREATE TABLE `tbtipoanimal` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `tbtipoanimal`
+-- Dumping data for table `tbtipoanimal`
 --
 
 INSERT INTO `tbtipoanimal` (`tipoanimalid`, `tipoanimalnombre`, `tipoanimalcategoria`) VALUES
@@ -169,7 +190,7 @@ INSERT INTO `tbtipoanimal` (`tipoanimalid`, `tipoanimalnombre`, `tipoanimalcateg
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tbventa`
+-- Table structure for table `tbventa`
 --
 
 CREATE TABLE `tbventa` (
@@ -181,21 +202,32 @@ CREATE TABLE `tbventa` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Índices para tablas volcadas
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `tbventa`
+-- Indexes for table `tbsubasta`
+--
+ALTER TABLE `tbsubasta`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbventa`
 --
 ALTER TABLE `tbventa`
   ADD PRIMARY KEY (`ventaid`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `tbventa`
+-- AUTO_INCREMENT for table `tbsubasta`
+--
+ALTER TABLE `tbsubasta`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `tbventa`
 --
 ALTER TABLE `tbventa`
   MODIFY `ventaid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
