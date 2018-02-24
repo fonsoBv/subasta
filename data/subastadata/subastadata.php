@@ -8,7 +8,7 @@ que se toma la ruta desde el view
 */
 if (isset($_POST['eliminar']) || isset($_POST['actualizar']) || isset($_POST['insertar'])
 || isset($_POST['obtener']) || isset($_POST['registrarVenta']) || isset($_POST['insertarResubasta']) || isset($_POST['obtenerMontoSubastas'])
-|| isset($_POST['FacturaComprador']) || isset($_POST['ObtenerResubastasyVentas']) || isset($_POST['obtenerUnaVenta'])) {
+|| isset($_POST['FacturaComprador']) || isset($_POST['ObtenerResubastasyVentas']) || isset($_POST['obtenerUnaVenta']) || isset($_POST['vistaRegistroSubasta'])) {
 
     include_once '../../data/data.php';
     include '../../domain/subasta/subasta.php';
@@ -48,7 +48,7 @@ class SubastaData extends Data {
 
         mysqli_close($conn);
 
-        insertarControl($ventaanimal, $ventacomprador, $ventaprecio);
+        $this->insertarControl($ventaAnimal, $ventaComprador, $ventaPrecio);
     }//insertarVenta
 
     public function insertarResubasta($resubastaAnimal, $resubastaComprador,
@@ -78,7 +78,7 @@ class SubastaData extends Data {
 
         mysqli_close($conn);
 
-        insertarControl($resubastaanimal, $resubastacomprador, $resubastaprecio);
+        $this->insertarControl($resubastaAnimal, $resubastaComprador, $resubastaPrecio);
     }//insertarresubasta
 
     public function insertarControl($Animal, $Comprador, $Precio) {
@@ -230,7 +230,12 @@ class SubastaData extends Data {
             $montoVentas = trim($row[0]);
         }//end if
 
-        $montoTotal = $montoVentas;
+        if($montoVentas == ""){
+            $montoTotal = 0;
+        }else{
+            $montoTotal = $montoVentas + 0;
+        }
+        
 
         mysqli_close($conn);
 
@@ -271,7 +276,33 @@ class SubastaData extends Data {
             echo json_encode($ventas);
     }//Facturas por
 
+    public function obtenerDatosSubastas() {
+       $conn = mysqli_connect($this->server, $this->user, $this->password, $this->db);
+       $conn->set_charset('utf8');
 
+       $querySelect = "SELECT id, id_animal, id_comprador,
+       precio FROM tbsubasta ORDER BY id DESC LIMIT 4";
+
+       //SELECT * FROM tabla ORDER BY id DESC LIMIT 5
+
+       $result = mysqli_query($conn, $querySelect);
+       mysqli_close($conn);
+
+       $flag = false;
+
+       while ($row = mysqli_fetch_array($result)) {
+           $subastas["Data"][] = $row;
+
+           $flag = true;
+       }//end while
+
+       if ($flag == true) {
+           echo json_encode($subastas);
+       }else {
+           echo "Sin coincidencias";
+       }
+
+   }//obteneranimales
 
 }//end class
 

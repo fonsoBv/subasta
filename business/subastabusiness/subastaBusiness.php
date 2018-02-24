@@ -7,7 +7,7 @@ que se toma la ruta desde el view
 if (isset($_POST['eliminar']) || isset($_POST['insertarVenta']) || isset($_POST['insertarResubasta'])
 || isset($_POST['eliminarSubastaVenta']) || isset($_POST['eliminarSubastaResubasta'])
 || isset($_POST['obtener']) || isset($_POST['registrarVenta']) || isset($_POST['obtenerMontoSubastas'])
-|| isset($_POST['FacturaComprador'])) {
+|| isset($_POST['FacturaComprador']) || isset($_POST['vistaRegistroSubasta'])) {
     include_once '../../data/subastadata/subastadata.php';
 }else {
     include_once '../data/subastadata/subastadata.php';
@@ -71,6 +71,11 @@ class SubastaBusiness {
     public function obtenerMontoSubastas() {
         return $this->subastaData->obtenerMontoSubastas();
     }//insertarVenta
+
+    /*Obtiene los ultimos 4 registros*/
+    public function obtenerDatosSubastas() {
+        return $this->subastaData->obtenerDatosSubastas();
+    }//obtenerDatosActualizar
 
 }//class
 

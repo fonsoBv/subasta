@@ -58,14 +58,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <!--header end here-->
 <!--about start here-->
 
-    <?php
-        $especieBusiness = new EspecieBusiness();
-        $tipoanimal = $especieBusiness->obtenerTBEspeciePorCategoria(1);
-
-        $razaBusiness = new RazaBusiness();
-        $razas = $razaBusiness->obtenerTBRazas();
-    ?>
-
     <div class="container">
         <div class="single">
             <div class="comment-bottom">

@@ -39,7 +39,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     <h1><a href="../index.html">Inicio</a></h1>
                 </div>
                 <div class="logo">
-                    <h1><label id="paddingVentas">Ventas: 10000</label></h1>
+                    <h1><label id="paddingVentas">Ventas: ¢ 0</label></h1>
                 </div>
          <div class="clearfix"> </div>
       </div>
@@ -48,22 +48,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 </div>
 <!--header end here-->
 
-    <?php
-        $compradorBusiness = new CompradorBusiness();
-        $compradores = $compradorBusiness->obtenerTBComprador();
-    ?>
 
     <div class="container">
         <div class="single">
             <div class="comment-bottom">
-                <div class="col-md-9 banner-right">
-                    <h3>Registrar Comprador</h3>
-                    <div id='tablaSubasta'></div>
-                </div>
+                <h3>Subasta</h3>
+                <div id='tablaResultados'></div>
             </div>
         </div>
     </div>
-    <br><br>
 
 <div class="footer">
     <div class="container">
@@ -77,77 +70,87 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 </html>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
+        obtenerUltimosCuatroRegistros();
+        obtenerMonto();
         var refreshId =  setInterval( function(){
-
-            /*Se obtienen los datos de la subasta*/
-            $.ajax({
-              url: '../business/encargadobusiness/encargadoAction.php',
-              type: 'POST',
-              dataType: 'text',
-              data: {buscar : dato, tipoBusqueda : tipoBusqueda},
-              beforeSend: function(){
-                //$("#loadIMg").show();//
-              }
-            })
-            .done(function(respuesta){
-
-                /*Se valida si se encontro similitud con el parámetro de busqueda que ingreso el usuario*/
-                if (respuesta == 'Sin coincidencias') {
-                    $("#tablaSubasta").show();
-                    $("#tablaSubasta").html("<strong style='color:red'> Sin coincidencias </strong>");
-                }else {
-                    //$("#loadIMg").hide();//
-
-                    /*Convierte el objeto codificado en un objeto json*/
-                    var prod = JSON.parse(respuesta);
-
-                    var salida ="";
-
-                    /*Según el tipo de busqueda se asignan los datos*/
-                    salida = "<table class='table'>"+
-                        "<thead>"+
-                            "<tr>"+
-                                "<th># Animal</th>"+
-                                "<th># Comprador</th>"+
-                                "<th>Precio</th>"+
-                            "</tr>"+
-                        "</thead>"+
-                    "<tbody>";
-
-                    for (var i = 0; i < prod.Data.length; i++) {
-                        salida += "<tr>"+
-                            "<td>" + prod.Data[i].encargadonombrecompleto + "</td>"+
-                            "<td>" + prod.Data[i].encargadocorreo + "</td>"+
-                            "<td>" + prod.Data[i].encargadopueblo + "</td>"+
-                            "<td>" + prod.Data[i].encargadodireccion + "</td>"+
-                            "<td><select id='numeroTelefono' name='numeroTelefono'>";
-
-                            /*Se cargan los telefonos en el combobox*/
-                            for (var j = 0; j< telefonos.Data.length; j++){
-                                if (prod.Data[i].encargadoid == telefonos.Data[j].encargadoid) {
-                                    salida +="<option value="+ telefonos.Data[j].numerotelefono +">"+ telefonos.Data[j].numerotelefono +"</option>";
-                                }
-                            }
-                            salida += "</select>"+
-                            "</td>"+
-                            "<td><a href='./clienteAnimalInformacion.php?encargadoid="+ prod.Data[i].encargadoid +"'>Información</a></td>"+
-                        "</tr>";
-                    }
-
-                    salida +="</tbody></table>";
-
-                    $("#tablaSubasta").html(salida);
-                    $('#tablaSubasta').hide(0);
-                    $('#tablaSubasta').show();//delay(100).slideDown(2000);
-                }
-            })
-            .fail( function(error, textStatus, errorThrown) {
-                console.log(error.value); //Check console for output
-                $("#loadIMg").hide();//#datos es un div
-            });
-
-
+            obtenerUltimosCuatroRegistros();
+            obtenerMonto();
         }, 3000 ); //3000 = 3 segundos
     });
+
+    function obtenerUltimosCuatroRegistros(){
+        /*Se ordenan los datos en la tabla*/
+        $.ajax({
+          url: '../business/subastabusiness/subastaAction.php',
+          type: 'POST',
+          dataType: 'text',
+          data: {vistaRegistroSubasta : 'vistaRegistroSubasta'},
+          beforeSend: function(){
+            //$("#loadIMg").show();//
+          }
+        })
+        .done(function(respuesta){
+            /*Se valida si se encontro similitud con el parámetro de busqueda que ingreso el usuario*/
+            if (respuesta == 'Sin coincidencias') {
+                $("#tablaResultados").show();
+                $("#tablaResultados").html("<strong style='color:red'> Sin coincidencias </strong>");
+            }else {
+                //$("#loadIMg").hide();//
+
+                /*Convierte el objeto codificado en un objeto json*/
+                var subastas = JSON.parse(respuesta);
+
+                var salida ="";
+
+                salida = "<table class='table'>"+
+                    "<thead>"+
+                        "<tr>"+
+                            "<th>Número del animal</th>"+
+                            "<th>Número del comprador</th>"+
+                            "<th>Precio</th>"+
+                        "</tr>"+
+                    "</thead>"+
+                "<tbody>";
+
+                /*Al recorrer el for debe llegar desde la ultima posición hasta la cero*/
+                for (var i = (subastas.Data.length -1); i > -1; i--) {
+                    salida += "<tr>"+
+                        "<td>" + subastas.Data[i].id_animal + "</td>"+
+                        "<td>" + subastas.Data[i].id_comprador + "</td>"+
+                        "<td>" + subastas.Data[i].precio + "</td>"+
+                    "</tr>";
+                }
+
+                salida +="</tbody></table>";
+
+                $("#tablaResultados").html(salida);
+                $('#tablaResultados').hide(0);
+                $('#tablaResultados').show();//delay(100).slideDown(2000);
+            }
+        })
+        .fail( function(error, textStatus, errorThrown) {
+            console.log(error.value); //Check console for output
+            $("#loadIMg").hide();//#datos es un div
+        });
+    }
+
+    function obtenerMonto(){
+        /*Se ordenan los datos en la tabla*/
+        $.ajax({
+          url: '../business/subastabusiness/subastaAction.php',
+          type: 'POST',
+          dataType: 'text',
+          data: {obtenerMontoSubastas : 'obtenerMontoSubastas'},
+          beforeSend: function(){
+            //$("#loadIMg").show();//
+          }
+        })
+        .done(function(respuesta){
+            $("#paddingVentas").html('Ventas: ¢ '+ respuesta);
+        })
+        .fail( function(error, textStatus, errorThrown) {
+            $("#paddingVentas").html(0);
+        });
+    }
 </script>

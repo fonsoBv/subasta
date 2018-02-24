@@ -92,9 +92,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                     <br><br>
                                     <input type="button" value="Resubastar" onclick="registrarReSubasta()">
                                     <br><br>
-                                    <label style="font-size:2em; text-align: center;color:#886741; font-family: 'Baumans', cursive; margin-bottom: 0.5em;">₡</label>
-                                    <span id="registro" style=" font-size:2em; text-align: center;color:#886741; font-family: 'Baumans', cursive; margin-bottom: 0.5em;">0</span>
-                                    <br><br>
                                 </form>
                             </div>
                         </div>

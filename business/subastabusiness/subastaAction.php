@@ -89,6 +89,9 @@ include './subastaBusiness.php';
    $subastaBusiness = new subastaBusiness();
    $resultado = $subastaBusiness->obtenerVentasPorComprador($compradorid);
 
+}else if (isset($_POST['vistaRegistroSubasta'])) {
+    $subastaBusiness = new SubastaBusiness();
+    $respuesta = $subastaBusiness->obtenerDatosSubastas();
 }
 
 ?>
