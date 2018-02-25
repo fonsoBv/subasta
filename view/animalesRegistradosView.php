@@ -103,7 +103,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             /*Se valida si se encontro similitud con el parámetro de busqueda que ingreso el usuario*/
             if (respuesta == 'Sin coincidencias') {
                 $("#tablaResultados").show();
-                $("#tablaResultados").html("<strong style='color:red'> Sin coincidencias </strong>");
+                //$("#tablaResultados").html("<strong style='color:red'> Sin coincidencias </strong>");
+                mostrarMensaje("error", "No se han encontrado resultados")
             }else {
                 //$("#loadIMg").hide();//
 
@@ -143,4 +144,30 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             $("#loadIMg").hide();//#datos es un div
         });
     }
+
+    function mostrarMensaje(estado,mensaje){
+        if(estado === "success"){
+            reset();
+            alertify.success(mensaje);
+            return false;
+        }else if(estado === "error"){
+            reset();
+            alertify.error(mensaje);
+            return false;
+        }//if-else
+    }//mostrarMensaje
+
+    /*FUNCION QUE LIMPIA EL ESPACIO PARA COLOCAR LAS NOTIFICACIONES*/
+    function reset () {
+        $("#toggleCSS").attr("href", "./alertify.default.css");
+            alertify.set({
+                labels : {
+                    ok     : "OK",
+                    cancel : "Cancel"
+                },
+                delay : 5000,
+                buttonReverse : false,
+                buttonFocus   : "ok"
+        });
+    }//reset
 </script>
